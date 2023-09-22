@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -37,5 +39,30 @@ public class UserController {
         return "redirect:/user-info";
     }
 
+    @GetMapping("/{id}/update")
+    public String updateUser(@PathVariable Long id, Model model){
+        User user = userService.readById(id);
+        model.addAttribute("user", user);
+        return "update-user";
+    }
+
+    @PostMapping("/{id}/update")
+    public String updateUser(@PathVariable Long id, @ModelAttribute("user") User updatedUser) {
+        userService.update(updatedUser);
+        return "redirect:/home";
+    }
+
+    @GetMapping("/{id}/delete")
+    public String deleteUser(@PathVariable Long id) {
+        userService.delete(id);
+        return "redirect:/home";
+    }
+
+    @GetMapping("/all")
+    public String getAllUsers(Model model) {
+        List<User> users = userService.getUsers();
+        model.addAttribute("users", users);
+        return "/home";
+    }
 
 }
